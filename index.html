@@ -1,0 +1,1070 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <title>手写签名生成器</title>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script> -->
+    <script src="js/jszip.js"></script>
+    <script src="js/exceljs.js"></script>
+    <style>
+      @font-face { font-family: '爱你绵绵'; src: url('font/爱你绵绵.ttf'); }
+      @font-face { font-family: '把侧妃呵呵'; src: url('font/把侧妃呵呵.ttf'); }
+      @font-face { font-family: '变更大夏'; src: url('font/变更大夏.ttf'); }
+      @font-face { font-family: '草草草草草草书'; src: url('font/草草草草草草书.ttf'); }
+      @font-face { font-family: '陈氏家族体'; src: url('font/陈氏家族体.ttf'); }
+      @font-face { font-family: '凡人行书'; src: url('font/凡人行书.ttf'); }
+      @font-face { font-family: '巩草'; src: url('font/巩草.ttf'); }
+      @font-face { font-family: '好久嘻嘻'; src: url('font/好久嘻嘻.ttf'); }
+      @font-face { font-family: '呵呵呵呵呵鸡体'; src: url('font/呵呵呵呵呵鸡体.ttf'); }
+      @font-face { font-family: '恨到爱'; src: url('font/恨到爱.ttf'); }
+      @font-face { font-family: '花开有时'; src: url('font/花开有时.ttf'); }
+      @font-face { font-family: '惊涛骇浪'; src: url('font/惊涛骇浪.ttf'); }
+      @font-face { font-family: '林泽西酒体'; src: url('font/林泽西酒体.ttf'); }
+      @font-face { font-family: '落雨无情落花心'; src: url('font/落雨无情落花心.ttf'); }
+      @font-face { font-family: '湄岸'; src: url('font/湄岸.ttf'); }
+      @font-face { font-family: '眠心'; src: url('font/眠心.ttf'); }
+      @font-face { font-family: '喵系'; src: url('font/喵系.ttf'); }
+      @font-face { font-family: '陌尚卿'; src: url('font/陌尚卿.ttf'); }
+      @font-face { font-family: '束安琪'; src: url('font/束安琪.ttf'); }
+      @font-face { font-family: '彤彤砸'; src: url('font/彤彤砸.ttf'); }
+      @font-face { font-family: '王者荣耀体验款'; src: url('font/王者荣耀体验款.ttf'); }
+      @font-face { font-family: '我己不知我为何这么帅'; src: url('font/我己不知我为何这么帅.ttf'); }
+      @font-face { font-family: '潇笔'; src: url('font/潇笔.ttf'); }
+      @font-face { font-family: '小雯雯小可爱大可爱哈'; src: url('font/小雯雯小可爱大可爱哈.ttf'); }
+      @font-face { font-family: '一看就是大夫写的'; src: url('font/一看就是大夫写的.ttf'); }
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #edeae3;
+        color: #1e2330;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+        min-height: 100vh;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #312e81 0%, #1e1b6e 100%);
+        color: white;
+        padding: 22px 20px 18px;
+        text-align: center;
+        box-shadow: 0 2px 16px rgba(30, 27, 110, 0.28);
+      }
+      .header h1 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+      .header p {
+        font-size: 12px;
+        opacity: 0.7;
+      }
+
+      .main {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 20px 16px 60px;
+      }
+
+      /* ── Input card ── */
+      .add-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow:
+          0 2px 8px rgba(0, 0, 0, 0.07),
+          0 0 0 1px rgba(0, 0, 0, 0.04);
+        margin-bottom: 16px;
+      }
+      .add-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 12px;
+      }
+      .input-row {
+        display: flex;
+        gap: 10px;
+        align-items: stretch;
+      }
+      .name-input {
+        flex: 1;
+        padding: 10px 14px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #1e2330;
+        background: #f8fafc;
+        outline: none;
+        transition: all 0.2s;
+        resize: none;
+        line-height: 1.5;
+        font-family: inherit;
+      }
+      .name-input::placeholder {
+        color: #c4cdd8;
+      }
+      .name-input:focus {
+        border-color: #4338ca;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+      }
+      .btn-add {
+        padding: 10px 22px;
+        background: #4338ca;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        align-self: stretch;
+        transition: all 0.15s;
+        box-shadow: 0 2px 8px rgba(67, 56, 202, 0.3);
+      }
+      .btn-add:hover {
+        background: #3730a3;
+      }
+      .btn-add:active {
+        transform: scale(0.97);
+        box-shadow: none;
+      }
+      .input-hint {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #b0b8c6;
+      }
+      .excel-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+      .excel-file {
+        display: none;
+      }
+      .btn-excel {
+        background: #ecfdf5;
+        color: #047857;
+      }
+      .btn-excel:hover {
+        background: #d1fae5;
+      }
+      .excel-status {
+        font-size: 12px;
+        color: #64748b;
+      }
+
+      /* ── Toolbar ── */
+      .toolbar {
+        background: white;
+        border-radius: 16px;
+        padding: 14px 18px;
+        box-shadow:
+          0 2px 8px rgba(0, 0, 0, 0.07),
+          0 0 0 1px rgba(0, 0, 0, 0.04);
+        margin-bottom: 16px;
+        display: none; /* shown once names loaded */
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+      .toolbar.visible {
+        display: flex;
+      }
+      .toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        flex: 1;
+      }
+      .toolbar-right {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+        flex-direction: column;
+      }
+      .count-badge {
+        background: #eef2ff;
+        color: #4338ca;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 20px;
+        white-space: nowrap;
+      }
+      .style-pills {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .style-pill {
+        height: 28px;
+        padding: 0 12px;
+        border-radius: 14px;
+        border: 1.5px solid #e2e8f0;
+        background: white;
+        font-size: 12px;
+        color: #64748b;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.15s;
+      }
+      .style-pill:hover {
+        border-color: #a5b4fc;
+        color: #4338ca;
+      }
+      .style-pill.active {
+        border-color: #4338ca;
+        background: #4338ca;
+        color: white;
+      }
+      .color-swatches { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+      .color-swatch {
+        width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+        border: 2.5px solid transparent; transition: transform .15s, border-color .15s;
+        flex-shrink: 0;
+      }
+      .color-swatch:hover { transform: scale(1.15); }
+      .color-swatch.active { border-color: #4338ca; transform: scale(1.15); }
+      .btn-toolbar {
+        height: 34px;
+        padding: 0 14px;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .btn-toolbar:active {
+        transform: scale(0.95);
+      }
+      .btn-dl-all {
+        background: #4338ca;
+        color: white;
+        box-shadow: 0 1px 4px rgba(67, 56, 202, 0.25);
+      }
+      .btn-dl-all:hover {
+        background: #3730a3;
+      }
+      .btn-dl-all:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .btn-clear {
+        background: #fff0f0;
+        color: #ef4444;
+      }
+      .btn-clear:hover {
+        background: #ffe0e0;
+      }
+
+      /* ── Progress ── */
+      .progress-wrap {
+        display: none;
+        background: white;
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 16px;
+        box-shadow:
+          0 2px 8px rgba(0, 0, 0, 0.07),
+          0 0 0 1px rgba(0, 0, 0, 0.04);
+      }
+      .progress-wrap.visible {
+        display: block;
+      }
+      .progress-label {
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 8px;
+      }
+      .progress-track {
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: #4338ca;
+        border-radius: 4px;
+        transition: width 0.2s;
+        width: 0%;
+      }
+
+      /* ── Signature grid ── */
+      .sig-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+
+      /* ── Signature card (grid item) ── */
+      .sig-card {
+        background: white;
+        border-radius: 14px;
+        box-shadow:
+          0 1px 4px rgba(0, 0, 0, 0.07),
+          0 0 0 1px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+        position: relative;
+      }
+      .sig-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 12px;
+        border-bottom: 1px solid #f1f5f9;
+      }
+      .sig-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1e2330;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 120px;
+      }
+      .sig-idx {
+        font-size: 10px;
+        color: #94a3b8;
+        margin-left: 5px;
+        flex-shrink: 0;
+      }
+      .sig-actions {
+        display: flex;
+        gap: 5px;
+      }
+      .btn-sm {
+        height: 26px;
+        padding: 0 9px;
+        border: none;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .btn-sm:active {
+        transform: scale(0.95);
+      }
+      .btn-regen {
+        background: #eef2ff;
+        color: #4338ca;
+      }
+      .btn-regen:hover {
+        background: #e0e7ff;
+      }
+      .btn-dl-one {
+        background: #4338ca;
+        color: white;
+      }
+      .btn-dl-one:hover {
+        background: #3730a3;
+      }
+      .btn-del {
+        background: #fff0f0;
+        color: #ef4444;
+      }
+      .btn-del:hover {
+        background: #ffe0e0;
+      }
+
+      .canvas-area {
+        padding: 8px 10px 10px;
+        background: #fafbfd;
+      }
+      .canvas-wrap {
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid #e8e2d4;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+      }
+      .sig-canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      /* ── Empty state ── */
+      .empty-state {
+        text-align: center;
+        padding: 72px 20px;
+      }
+      .empty-state svg {
+        width: 54px;
+        height: 54px;
+        margin: 0 auto 14px;
+        display: block;
+        opacity: 0.2;
+      }
+      .empty-state p {
+        font-size: 14px;
+        color: #94a3b8;
+      }
+
+      @media (max-width: 700px) {
+        .sig-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+      @media (max-width: 440px) {
+        .sig-grid { grid-template-columns: 1fr; }
+        .input-row {
+          flex-direction: column;
+        }
+        .btn-add {
+          height: 40px;
+        }
+        .toolbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <h1>✍ 手写签名生成器</h1>
+      <p>输入姓名，自动生成个性化手写签名 · 每次生成都不重样</p>
+    </header>
+
+    <main class="main">
+      <!-- Input -->
+      <div class="add-card">
+        <div class="add-label">输入姓名</div>
+        <div class="input-row">
+          <textarea
+            class="name-input"
+            id="nameInput"
+            rows="3"
+            placeholder="输入姓名（支持中英文）&#10;可粘贴多行姓名，每行一个"
+            onkeydown="if (event.key === 'Enter' && event.ctrlKey) handleAdd()"
+          ></textarea>
+          <button class="btn-add" onclick="handleAdd()">生成签名</button>
+        </div>
+        <div class="input-hint">支持逗号、换行、分号分隔多个姓名 · Ctrl+Enter 快速生成</div>
+        <div class="excel-row">
+          <input class="excel-file" id="excelInput" type="file" accept=".xlsx" onchange="importExcel(event)" />
+          <button class="btn-toolbar btn-excel" type="button" onclick="document.getElementById('excelInput').click()">导入 Excel 姓名</button>
+          <span class="excel-status" id="excelStatus">导入后可将签名图片写回原 Excel</span>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar" id="toolbar">
+        <div class="toolbar-left">
+          <div class="count-badge" id="countBadge">0 个签名</div>
+          <span style="font-size: 12px; color: #94a3b8; white-space: nowrap">字体颜色：</span>
+          <div class="color-swatches" id="colorSwatches"></div>
+          <span style="font-size: 12px; color: #94a3b8; white-space: nowrap">统一风格：</span>
+          <div class="style-pills" id="globalStylePills"></div>
+          <button class="style-pill" style="border-color: #e2e8f0; color: #64748b" onclick="randomizeAll()">随机混搭</button>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn-toolbar btn-dl-all" id="btnDlAll" onclick="dlAll()">批量下载 ZIP</button>
+          <button class="btn-toolbar btn-excel" id="btnExportExcel" onclick="exportExcel()" disabled>签名写回 Excel</button>
+          <button class="btn-toolbar btn-clear" onclick="clearAll()">清空全部</button>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-label" id="progressLabel">正在生成签名...</div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+
+      <!-- Grid -->
+      <div id="listRoot">
+        <div class="empty-state" id="emptyState">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+            />
+          </svg>
+          <p>在上方输入姓名，即可生成专属手写签名</p>
+        </div>
+        <div id="vOuter" style="display: none">
+          <div class="sig-grid" id="grid"></div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // ─── Constants ────────────────────────────────────────────────────────────────
+      const CW = 700, CH = 210
+
+      // ─── State ───────────────────────────────────────────────────────────────────
+      let sigData = [] // { name, si, dataUrl? }
+      let globalSi = 0
+      let sigColor = '#1a1a1a' // default black
+      let excelState = null // { workbook, worksheet, nameRows, signatureColumn, fileName }
+
+      // ─── Color palette ───────────────────────────────────────────────────────────
+      const COLOR_PRESETS = [
+        { label:'黑色',  value: '#1a1a1a', swatch: '#1a1a1a' },
+        { label:'深蓝',  value: '#0d1b50', swatch: '#0d1b50' },
+        { label:'深红',  value: '#5a0a0a', swatch: '#5a0a0a' },
+        { label:'墨绿',  value: '#0a3020', swatch: '#0a3020' },
+        { label:'深紫',  value: '#2a1a5e', swatch: '#2a1a5e' },
+        { label:'棕色',  value: '#4a2a0a', swatch: '#4a2a0a' },
+        { label:'深灰',  value: '#3a3a3a', swatch: '#3a3a3a' },
+      ]
+
+      ;(function initColorSwatches() {
+        const wrap = document.getElementById('colorSwatches')
+        COLOR_PRESETS.forEach((c, i) => {
+          const b = document.createElement('button')
+          b.className = 'color-swatch' + (i === 0 ? ' active' : '')
+          b.title = c.label
+          b.style.background = c.swatch
+          b.onclick = () => {
+            sigColor = c.value
+            wrap.querySelectorAll('.color-swatch').forEach((s, j) => s.classList.toggle('active', j === i))
+            rerenderVisible()
+          }
+          wrap.appendChild(b)
+        })
+      })()
+
+      // ─── Styles ───────────────────────────────────────────────────────────────
+      const STYLES = [
+        { id:'s1',  label:'爱你绵绵',    font:"'爱你绵绵'",         sizeBase:68, sizeVar:10, tiltMax:.10, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.95, colors:['#1a1a5e','#0d1b50','#1a1a4a'] },
+        { id:'s2',  label:'把侧妃呵呵',  font:"'把侧妃呵呵'",       sizeBase:66, sizeVar:10, tiltMax:.13, jY:6, jX:3, rotMax:.10, scaleVar:.08, spacing:1.00, colors:['#2a1414','#3a1818','#1a0e0e'] },
+        { id:'s3',  label:'变更大夏',    font:"'变更大夏'",         sizeBase:64, sizeVar:8,  tiltMax:.08, jY:3, jX:2, rotMax:.06, scaleVar:.05, spacing:.96, colors:['#1a2030','#252035','#1a1a2e'] },
+        { id:'s4',  label:'草书',        font:"'草草草草草草书'",    sizeBase:72, sizeVar:14, tiltMax:.16, jY:8, jX:5, rotMax:.14, scaleVar:.13, spacing:1.05, colors:['#1a1a1a','#2a1a0a','#101010'] },
+        { id:'s5',  label:'陈氏家族体',  font:"'陈氏家族体'",       sizeBase:64, sizeVar:8,  tiltMax:.09, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.97, colors:['#0d1b3e','#1a2a5e','#0a1530'] },
+        { id:'s6',  label:'凡人行书',    font:"'凡人行书'",         sizeBase:66, sizeVar:10, tiltMax:.11, jY:5, jX:3, rotMax:.09, scaleVar:.07, spacing:.98, colors:['#1e3a5f','#163050','#0d2640'] },
+        { id:'s7',  label:'巩草',        font:"'巩草'",             sizeBase:70, sizeVar:12, tiltMax:.14, jY:7, jX:4, rotMax:.12, scaleVar:.10, spacing:1.02, colors:['#1a1a1a','#0a0a0a','#2a2a1a'] },
+        { id:'s8',  label:'好久嘻嘻',    font:"'好久嘻嘻'",         sizeBase:66, sizeVar:10, tiltMax:.10, jY:5, jX:3, rotMax:.08, scaleVar:.07, spacing:.97, colors:['#1a3a2e','#0d2820','#1a3020'] },
+        { id:'s9',  label:'呵呵鸡体',    font:"'呵呵呵呵呵鸡体'",   sizeBase:64, sizeVar:8,  tiltMax:.08, jY:4, jX:2, rotMax:.06, scaleVar:.06, spacing:.95, colors:['#2a1a4e','#1e1540','#1a1038'] },
+        { id:'s10', label:'恨到爱',      font:"'恨到爱'",           sizeBase:68, sizeVar:10, tiltMax:.12, jY:6, jX:3, rotMax:.10, scaleVar:.08, spacing:.99, colors:['#3a0a0a','#2a0808','#1a0a0a'] },
+        { id:'s11', label:'花开有时',    font:"'花开有时'",         sizeBase:66, sizeVar:8,  tiltMax:.09, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.96, colors:['#1a2a4e','#0d1a3e','#1a1a3e'] },
+        { id:'s12', label:'惊涛骇浪',    font:"'惊涛骇浪'",         sizeBase:72, sizeVar:14, tiltMax:.16, jY:8, jX:5, rotMax:.14, scaleVar:.12, spacing:1.04, colors:['#0a0a2e','#1a1a4e','#0d0d3e'] },
+        { id:'s13', label:'林泽西酒体',  font:"'林泽西酒体'",       sizeBase:68, sizeVar:12, tiltMax:.13, jY:6, jX:4, rotMax:.11, scaleVar:.09, spacing:1.01, colors:['#1a1a1a','#2a2010','#101010'] },
+        { id:'s14', label:'落雨无情',    font:"'落雨无情落花心'",   sizeBase:66, sizeVar:10, tiltMax:.10, jY:5, jX:3, rotMax:.08, scaleVar:.07, spacing:.97, colors:['#1e2a5e','#162050','#0d1a40'] },
+        { id:'s15', label:'湄岸',        font:"'湄岸'",             sizeBase:64, sizeVar:8,  tiltMax:.08, jY:3, jX:2, rotMax:.06, scaleVar:.05, spacing:.94, colors:['#1a3a2e','#0d2820','#0a2a20'] },
+        { id:'s16', label:'眠心',        font:"'眠心'",             sizeBase:66, sizeVar:8,  tiltMax:.09, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.96, colors:['#2a1a4e','#1e1540','#1a1038'] },
+        { id:'s17', label:'喵系',        font:"'喵系'",             sizeBase:64, sizeVar:8,  tiltMax:.07, jY:3, jX:2, rotMax:.05, scaleVar:.05, spacing:.95, colors:['#3a1a2e','#2a0e20','#1a0a18'] },
+        { id:'s18', label:'陌尚卿',      font:"'陌尚卿'",           sizeBase:68, sizeVar:10, tiltMax:.10, jY:5, jX:3, rotMax:.08, scaleVar:.07, spacing:.97, colors:['#1a1a5e','#0d1b50','#1a1a4a'] },
+        { id:'s19', label:'束安琪',      font:"'束安琪'",           sizeBase:66, sizeVar:10, tiltMax:.09, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.96, colors:['#2a1414','#3a1818','#1a0e0e'] },
+        { id:'s20', label:'彤彤砸',      font:"'彤彤砸'",           sizeBase:64, sizeVar:8,  tiltMax:.08, jY:4, jX:2, rotMax:.06, scaleVar:.05, spacing:.95, colors:['#1a3a3e','#0d2830','#0a2028'] },
+        { id:'s21', label:'王者荣耀',    font:"'王者荣耀体验款'",   sizeBase:68, sizeVar:10, tiltMax:.11, jY:5, jX:3, rotMax:.09, scaleVar:.07, spacing:.98, colors:['#0a1a3e','#0d1b50','#0a1530'] },
+        { id:'s22', label:'帅气',        font:"'我己不知我为何这么帅'", sizeBase:64, sizeVar:8, tiltMax:.09, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.96, colors:['#1a1a1a','#2a1a0a','#101010'] },
+        { id:'s23', label:'潇笔',        font:"'潇笔'",             sizeBase:70, sizeVar:12, tiltMax:.13, jY:6, jX:4, rotMax:.11, scaleVar:.09, spacing:1.00, colors:['#0d1b3e','#1a2a5e','#0a1530'] },
+        { id:'s24', label:'小雯雯',      font:"'小雯雯小可爱大可爱哈'", sizeBase:64, sizeVar:8, tiltMax:.08, jY:4, jX:2, rotMax:.06, scaleVar:.05, spacing:.95, colors:['#3a1a3e','#2a0e30','#1a0a28'] },
+        { id:'s25', label:'大夫体',      font:"'一看就是大夫写的'",  sizeBase:66, sizeVar:12, tiltMax:.15, jY:7, jX:5, rotMax:.13, scaleVar:.11, spacing:1.03, colors:['#1a1a1a','#0a0a0a','#2a1a0a'] },
+      ]
+
+      // ─── Init global style pills ─────────────────────────────────────────────────
+      ;(function initGlobalPills() {
+        const wrap = document.getElementById('globalStylePills')
+        STYLES.forEach((s, i) => {
+          const b = document.createElement('button')
+          b.className = 'style-pill' + (i === 0 ? ' active' : '')
+          b.textContent = s.label
+          b.onclick = () => {
+            globalSi = i
+            wrap.querySelectorAll('.style-pill').forEach((p, j) => p.classList.toggle('active', j === i))
+            // Apply selected style to all, then redraw visible
+            sigData.forEach((d) => {
+              d.si = i
+              d.dataUrl = null
+            })
+            rerenderVisible()
+          }
+          wrap.appendChild(b)
+        })
+      })()
+
+      // ─── Input handler ───────────────────────────────────────────────────────────
+      function handleAdd() {
+        const inp = document.getElementById('nameInput')
+        const raw = inp.value.trim()
+        if (!raw) { inp.focus(); return }
+        const names = raw.split(/[,，;\n\r]+/).map((s) => s.trim()).filter(Boolean)
+        appendNames(names)
+        inp.value = ''
+        inp.focus()
+      }
+
+      function appendNames(names) {
+        const grid = document.getElementById('grid')
+        const startIdx = sigData.length
+        names.forEach((name) => {
+          const i = sigData.length
+          sigData.push({ name, si: Math.floor(Math.random() * STYLES.length), dataUrl: null })
+          grid.appendChild(buildCard(i))
+        })
+        updateUI()
+        renderBatch(startIdx, sigData.length - 1)
+      }
+
+      function replaceNames(names) {
+        sigData = []
+        document.getElementById('grid').innerHTML = ''
+        appendNames(names)
+      }
+
+      function randomizeAll() {
+        document.querySelectorAll('#globalStylePills .style-pill').forEach((p) => p.classList.remove('active'))
+        sigData.forEach((d) => { d.si = Math.floor(Math.random() * STYLES.length); d.dataUrl = null })
+        rerenderVisible()
+      }
+
+      function clearAll() {
+        sigData = []
+        document.getElementById('grid').innerHTML = ''
+        updateUI()
+      }
+
+      function updateUI() {
+        const n = sigData.length
+        document.getElementById('emptyState').style.display = n ? 'none' : ''
+        document.getElementById('vOuter').style.display = n ? '' : 'none'
+        document.getElementById('toolbar').classList.toggle('visible', n > 0)
+        document.getElementById('countBadge').textContent = `${n} 个签名`
+        const exportButton = document.getElementById('btnExportExcel')
+        if (exportButton) exportButton.disabled = !excelState || !n
+      }
+
+      async function importExcel(event) {
+        const file = event.target.files[0]
+        if (!file) return
+        const status = document.getElementById('excelStatus')
+        try {
+          status.textContent = '正在读取 Excel...'
+          const workbook = new ExcelJS.Workbook()
+          await workbook.xlsx.load(await file.arrayBuffer())
+          const worksheet = workbook.worksheets[0]
+          if (!worksheet) throw new Error('文件中没有工作表')
+
+          const nameRows = []
+          let nameColumn = 1
+          let headerRow = null
+          worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+            const firstValue = getCellText(row.getCell(1).value)
+            if (/^(姓名|员工姓名|名字|名称)$/.test(firstValue)) headerRow = rowNumber
+          })
+          worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+            const name = getCellText(row.getCell(nameColumn).value)
+            if (name && rowNumber !== headerRow) nameRows.push({ rowNumber, name })
+          })
+          if (!nameRows.length) throw new Error('第一列没有找到员工姓名')
+
+          excelState = {
+            workbook,
+            worksheet,
+            nameRows,
+            signatureColumn: Math.max(worksheet.columnCount + 1, nameColumn + 1),
+            fileName: file.name.replace(/\.xlsx$/i, ''),
+            imageIds: [],
+          }
+          replaceNames(nameRows.map((item) => item.name))
+          status.textContent = `已导入 ${nameRows.length} 个姓名：${worksheet.name}`
+        } catch (error) {
+          excelState = null
+          status.textContent = `导入失败：${error.message || '文件格式不正确'}`
+          updateUI()
+        } finally {
+          event.target.value = ''
+        }
+      }
+
+      function getCellText(value) {
+        if (value == null) return ''
+        if (typeof value === 'object' && value.richText) return value.richText.map((part) => part.text).join('').trim()
+        if (typeof value === 'object' && value.text) return String(value.text).trim()
+        return String(value).trim()
+      }
+
+      async function exportExcel() {
+        if (!excelState || !sigData.length) return
+        const button = document.getElementById('btnExportExcel')
+        const status = document.getElementById('excelStatus')
+        button.disabled = true
+        status.textContent = '正在生成并写回签名图片...'
+        try {
+          const { worksheet, nameRows, signatureColumn, workbook, fileName } = excelState
+          excelState.imageIds.forEach((imageId) => worksheet.removeImage(imageId))
+          excelState.imageIds = []
+          worksheet.getCell(1, signatureColumn).value = '签名'
+          worksheet.getColumn(signatureColumn).width = 30
+          for (let i = 0; i < nameRows.length; i++) {
+            const item = sigData[i]
+            const dataUrl = await getExportDataUrl(item, i)
+            const imageId = workbook.addImage({ base64: dataUrl, extension: 'png' })
+            excelState.imageIds.push(imageId)
+            worksheet.addImage(imageId, {
+              tl: { col: signatureColumn - 1 + 0.08, row: nameRows[i].rowNumber - 1 + 0.08 },
+              ext: { width: 210, height: 63 },
+            })
+            worksheet.getRow(nameRows[i].rowNumber).height = 52
+            status.textContent = `正在写入 ${i + 1} / ${nameRows.length}`
+            await sleep(0)
+          }
+          const buffer = await workbook.xlsx.writeBuffer()
+          const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.download = `${fileName}_含签名.xlsx`
+          a.href = url
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          setTimeout(() => URL.revokeObjectURL(url), 2000)
+          status.textContent = `已导出 ${nameRows.length} 个签名图片`
+        } catch (error) {
+          status.textContent = `导出失败：${error.message || '无法生成 Excel'}`
+        } finally {
+          updateUI()
+        }
+      }
+
+      // ─── Card builder ─────────────────────────────────────────────────────────────
+      function buildCard(i) {
+        const { name } = sigData[i]
+        const el = document.createElement('div')
+        el.className = 'sig-card'
+        el.dataset.idx = i
+        el.innerHTML = `
+        <div class="sig-card-header">
+            <div>
+                <span class="sig-name">${esc(name)}</span>
+                <span class="sig-idx">#${i + 1}</span>
+            </div>
+            <div class="sig-actions">
+                <button class="btn-sm btn-regen"  onclick="regenItem(${i})">重新生成</button>
+                <button class="btn-sm btn-dl-one" onclick="dlItem(${i})">下载</button>
+                <button class="btn-sm btn-del"    onclick="deleteItem(${i})">删除</button>
+            </div>
+        </div>
+        <div class="canvas-area">
+            <div class="canvas-wrap">
+                <canvas class="sig-canvas" id="cv-${i}"></canvas>
+            </div>
+        </div>`
+        return el
+      }
+
+      // ─── Per-item actions ─────────────────────────────────────────────────────────
+      function regenItem(i) {
+        sigData[i].dataUrl = null
+        renderBatch(i, i)
+      }
+
+      function deleteItem(i) {
+        sigData.splice(i, 1)
+        const grid = document.getElementById('grid')
+        grid.innerHTML = ''
+        const startIdx = 0
+        sigData.forEach((_, idx) => {
+          const el = buildCard(idx)
+          grid.appendChild(el)
+        })
+        updateUI()
+        renderBatch(startIdx, sigData.length - 1)
+      }
+
+      function dlItem(i) {
+        const item = sigData[i]
+        if (!item.dataUrl) return
+        const a = document.createElement('a')
+        a.download = `${item.name}-签名.png`
+        a.href = trimDataUrl(document.getElementById('cv-' + i))
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      }
+
+      function rerenderVisible() {
+        sigData.forEach((item) => { item.dataUrl = null })
+        renderBatch(0, sigData.length - 1)
+      }
+
+      // ─── Canvas init ──────────────────────────────────────────────────────────────
+      function initCanvas(cv) {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2)
+        cv.width = CW * dpr
+        cv.height = CH * dpr
+        cv.style.width = '100%'
+        cv.style.height = 'auto'
+        cv.style.aspectRatio = `${CW}/${CH}`
+        cv.getContext('2d').scale(dpr, dpr)
+        cv._dpr = dpr
+      }
+
+      // Reusable offscreen canvases to avoid GC pressure
+      let _sharedBuf = null, _sharedTmp = null, _sharedFlt = null
+      function getSharedCanvases(w, h) {
+        if (!_sharedBuf || _sharedBuf.width !== w || _sharedBuf.height !== h) {
+          _sharedBuf = Object.assign(document.createElement('canvas'), { width: w, height: h })
+          _sharedTmp = Object.assign(document.createElement('canvas'), { width: w + 12, height: h + 12 })
+          _sharedFlt = Object.assign(document.createElement('canvas'), { width: w + 12, height: h + 12 })
+        }
+        return { buf: _sharedBuf, tmp: _sharedTmp, flt: _sharedFlt }
+      }
+
+      // ─── Batch async renderer ────────────────────────────────────────────────────
+      let _renderToken = 0  // cancel stale batches
+      const BATCH_SIZE = 8
+
+      async function renderBatch(from, to) {
+        const token = ++_renderToken
+        for (let i = from; i <= to; i++) {
+          if (token !== _renderToken) return  // cancelled by a newer batch
+          const cv = document.getElementById('cv-' + i)
+          if (!cv) continue
+          if (!cv._dpr) initCanvas(cv)
+          renderItem(i, cv)
+          if ((i - from + 1) % BATCH_SIZE === 0) await sleep(0)
+        }
+      }
+
+      // ─── Render item ──────────────────────────────────────────────────────────────
+      function renderItem(i, cv) {
+        const item = sigData[i]
+        if (item.dataUrl) {
+          // Restore from cache
+          const dpr = cv._dpr || 1
+          const ctx = cv.getContext('2d')
+          const img = new Image()
+          img.onload = () => ctx.drawImage(img, 0, 0, cv.width, cv.height)
+          img.src = item.dataUrl
+          return
+        }
+        drawSignature(item, cv, () => {
+          try {
+            item.dataUrl = cv.toDataURL('image/png')
+          } catch (e) {}
+        })
+      }
+
+      // ─── Signature drawing ────────────────────────────────────────────────────────
+      function drawSignature(item, cv, onDone) {
+        const st = STYLES[item.si]
+        const dpr = cv._dpr || 1
+        const ctx = cv.getContext('2d')
+
+        const { buf, tmp, flt } = getSharedCanvases(cv.width, cv.height)
+        const pad = Math.round(3 * dpr)
+
+        // Resize shared canvases if needed (dpr change)
+        if (buf.width !== cv.width || buf.height !== cv.height) {
+          buf.width = cv.width; buf.height = cv.height
+          tmp.width = cv.width + pad * 2; tmp.height = cv.height + pad * 2
+          flt.width = tmp.width; flt.height = tmp.height
+        }
+
+        const bc = buf.getContext('2d')
+        bc.setTransform(dpr, 0, 0, dpr, 0, 0)
+        bc.clearRect(0, 0, CW, CH)
+
+        const tilt = (Math.random() - 0.5) * st.tiltMax * 2
+        const color = sigColor
+
+        let fontSize = st.sizeBase + (Math.random() - 0.5) * st.sizeVar * 2
+        const PAD = 60
+        bc.font = `700 ${fontSize}px ${st.font}, cursive`
+        bc.textBaseline = 'middle'
+        let totalW = 0
+        for (const ch of item.name) totalW += bc.measureText(ch).width * st.spacing
+        if (totalW > CW - PAD * 2) {
+          fontSize *= (CW - PAD * 2) / totalW
+          bc.font = `700 ${fontSize}px ${st.font}, cursive`
+          totalW = CW - PAD * 2
+        }
+
+        const fontStr = bc.font
+        const startX = Math.max(PAD, (CW - totalW) / 2)
+        const midY = CH * 0.44
+
+        bc.save()
+        bc.translate(CW / 2, CH / 2)
+        bc.rotate(tilt)
+        bc.translate(-CW / 2, -CH / 2)
+
+        let cx = startX
+        const n = item.name.length
+
+        for (let i = 0; i < n; i++) {
+          const ch = item.name[i]
+          bc.font = fontStr
+          const cw = bc.measureText(ch).width
+          const jx = (Math.random() - 0.5) * st.jX * 2
+          const wave = Math.sin((i / Math.max(n - 1, 1)) * Math.PI) * st.jY * 0.4
+          const jy = (Math.random() - 0.5) * st.jY + wave
+          const rot = (Math.random() - 0.5) * st.rotMax * 2
+          const fade = 1 - (i / Math.max(n - 1, 1)) * 0.04
+          const sc = fade * (1 + (Math.random() - 0.5) * st.scaleVar * 2)
+
+          bc.save()
+          bc.translate(cx + cw / 2 + jx, midY + jy)
+          bc.rotate(rot)
+          bc.scale(sc, sc)
+
+          bc.globalAlpha = 0.12
+          bc.fillStyle = color
+          bc.fillText(ch, -cw / 2 + 1, 1)
+          bc.globalAlpha = 0.86 + Math.random() * 0.12
+          bc.fillStyle = color
+          bc.fillText(ch, -cw / 2, 0)
+          if (Math.random() < 0.35) {
+            bc.globalAlpha = 0.06 + Math.random() * 0.06
+            bc.fillText(ch, -cw / 2 + (Math.random() - 0.5) * 0.8, (Math.random() - 0.5) * 0.8)
+          }
+          bc.restore()
+          cx += cw * st.spacing + (Math.random() - 0.5) * 2.5
+        }
+
+        bc.restore()
+
+        // Ink filter — reuse shared canvases
+        ctx.clearRect(0, 0, cv.width, cv.height)
+        const tc = tmp.getContext('2d')
+        tc.clearRect(0, 0, tmp.width, tmp.height)
+        tc.drawImage(buf, pad, pad)
+        const fc = flt.getContext('2d')
+        fc.clearRect(0, 0, flt.width, flt.height)
+        fc.filter = 'blur(0.6px) contrast(14)'
+        fc.drawImage(tmp, 0, 0)
+        fc.filter = 'none'
+        ctx.drawImage(flt, pad, pad, cv.width, cv.height, 0, 0, cv.width, cv.height)
+
+        if (onDone) onDone()
+      }
+
+      // ─── Off-screen render (for ZIP) ─────────────────────────────────────────────
+      function renderOffscreen(item) {
+        return new Promise((resolve) => {
+          const cv = document.createElement('canvas')
+          const dpr = Math.min(window.devicePixelRatio || 1, 2)
+          cv.width = CW * dpr
+          cv.height = CH * dpr
+          cv._dpr = dpr
+          cv.getContext('2d').scale(dpr, dpr)
+          drawSignature(item, cv, () => {
+            try {
+              const dataUrl = trimDataUrl(cv)
+              resolve(dataUrl)
+            } catch (e) {
+              cv.toBlob((blob) => {
+                const reader = new FileReader()
+                reader.onload = () => {
+                  resolve(reader.result)
+                }
+                reader.readAsDataURL(blob)
+              }, 'image/png')
+            }
+          })
+        })
+      }
+
+      function trimDataUrl(sourceCanvas) {
+        const ctx = sourceCanvas.getContext('2d')
+        const pixels = ctx.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height)
+        let minX = sourceCanvas.width, minY = sourceCanvas.height, maxX = -1, maxY = -1
+        for (let y = 0; y < sourceCanvas.height; y++) {
+          for (let x = 0; x < sourceCanvas.width; x++) {
+            if (pixels.data[(y * sourceCanvas.width + x) * 4 + 3] > 8) {
+              minX = Math.min(minX, x)
+              minY = Math.min(minY, y)
+              maxX = Math.max(maxX, x)
+              maxY = Math.max(maxY, y)
+            }
+          }
+        }
+        if (maxX < 0) return sourceCanvas.toDataURL('image/png')
+        const padding = Math.round(6 * (sourceCanvas.width / CW))
+        minX = Math.max(0, minX - padding)
+        minY = Math.max(0, minY - padding)
+        maxX = Math.min(sourceCanvas.width - 1, maxX + padding)
+        maxY = Math.min(sourceCanvas.height - 1, maxY + padding)
+        const trimmed = document.createElement('canvas')
+        trimmed.width = maxX - minX + 1
+        trimmed.height = maxY - minY + 1
+        trimmed.getContext('2d').drawImage(sourceCanvas, minX, minY, trimmed.width, trimmed.height, 0, 0, trimmed.width, trimmed.height)
+        return trimmed.toDataURL('image/png')
+      }
+
+      async function getExportDataUrl(item, index) {
+        const canvas = document.getElementById('cv-' + index)
+        if (canvas) return trimDataUrl(canvas)
+        return renderOffscreen(item)
+      }
+
+      // ─── Batch ZIP download ───────────────────────────────────────────────────────
+      async function dlAll() {
+        if (!sigData.length) return
+        const btn = document.getElementById('btnDlAll')
+        const wrap = document.getElementById('progressWrap')
+        const fill = document.getElementById('progressFill')
+        const label = document.getElementById('progressLabel')
+
+        btn.disabled = true
+        wrap.classList.add('visible')
+
+        const zip = new JSZip()
+        const folder = zip.folder('signatures')
+        const total = sigData.length
+        const BATCH = 40
+
+        for (let i = 0; i < total; i += BATCH) {
+          const batchEnd = Math.min(i + BATCH, total)
+          for (let j = i; j < batchEnd; j++) {
+            const item = sigData[j]
+            const dataUrl = await getExportDataUrl(item, j)
+            const base64 = dataUrl.split(',')[1]
+            // Sanitize filename: remove characters invalid in filenames
+            const safeName = item.name.replace(/[\/\\:*?"<>|]/g, '_')
+            folder.file(`${String(j + 1).padStart(4, '0')}_${safeName}.png`, base64, { base64: true })
+          }
+          const pct = Math.round((batchEnd / total) * 100)
+          fill.style.width = pct + '%'
+          label.textContent = `正在打包 ${batchEnd} / ${total}`
+          await sleep(0)
+        }
+
+        label.textContent = '正在压缩...'
+        fill.style.width = '100%'
+        await sleep(0)
+
+        const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 3 } })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.download = `员工签名_${total}人.zip`
+        a.href = url
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        setTimeout(() => URL.revokeObjectURL(url), 2000)
+
+        wrap.classList.remove('visible')
+        btn.disabled = false
+        fill.style.width = '0%'
+      }
+
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+
+      // ─── Helpers ──────────────────────────────────────────────────────────────────
+      function esc(t) {
+        const d = document.createElement('div')
+        d.appendChild(document.createTextNode(t))
+        return d.innerHTML
+      }
+    </script>
+  </body>
+</html>
