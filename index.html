@@ -7,33 +7,33 @@
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script> -->
     <script src="js/jszip.js"></script>
-    <script src="js/exceljs.js"></script>
+    <script src="js/jsExcel.js"></script>
     <style>
       @font-face { font-family: '爱你绵绵'; src: url('font/爱你绵绵.ttf'); }
       @font-face { font-family: '把侧妃呵呵'; src: url('font/把侧妃呵呵.ttf'); }
       @font-face { font-family: '变更大夏'; src: url('font/变更大夏.ttf'); }
       @font-face { font-family: '草草草草草草书'; src: url('font/草草草草草草书.ttf'); }
-      @font-face { font-family: '陈氏家族体'; src: url('font/陈氏家族体.ttf'); }
+      /* @font-face { font-family: '陈氏家族体'; src: url('font/陈氏家族体.ttf'); } */
       @font-face { font-family: '凡人行书'; src: url('font/凡人行书.ttf'); }
-      @font-face { font-family: '巩草'; src: url('font/巩草.ttf'); }
+      /* @font-face { font-family: '巩草'; src: url('font/巩草.ttf'); } */
       @font-face { font-family: '好久嘻嘻'; src: url('font/好久嘻嘻.ttf'); }
-      @font-face { font-family: '呵呵呵呵呵鸡体'; src: url('font/呵呵呵呵呵鸡体.ttf'); }
-      @font-face { font-family: '恨到爱'; src: url('font/恨到爱.ttf'); }
-      @font-face { font-family: '花开有时'; src: url('font/花开有时.ttf'); }
-      @font-face { font-family: '惊涛骇浪'; src: url('font/惊涛骇浪.ttf'); }
-      @font-face { font-family: '林泽西酒体'; src: url('font/林泽西酒体.ttf'); }
-      @font-face { font-family: '落雨无情落花心'; src: url('font/落雨无情落花心.ttf'); }
+      /* @font-face { font-family: '呵呵呵呵呵鸡体'; src: url('font/呵呵呵呵呵鸡体.ttf'); } */
+      /* @font-face { font-family: '恨到爱'; src: url('font/恨到爱.ttf'); } */
+      /* @font-face { font-family: '花开有时'; src: url('font/花开有时.ttf'); } */
+      /* @font-face { font-family: '惊涛骇浪'; src: url('font/惊涛骇浪.ttf'); } */
+      /* @font-face { font-family: '林泽西酒体'; src: url('font/林泽西酒体.ttf'); } */
+      /* @font-face { font-family: '落雨无情落花心'; src: url('font/落雨无情落花心.ttf'); } */
       @font-face { font-family: '湄岸'; src: url('font/湄岸.ttf'); }
       @font-face { font-family: '眠心'; src: url('font/眠心.ttf'); }
-      @font-face { font-family: '喵系'; src: url('font/喵系.ttf'); }
-      @font-face { font-family: '陌尚卿'; src: url('font/陌尚卿.ttf'); }
-      @font-face { font-family: '束安琪'; src: url('font/束安琪.ttf'); }
+      /* @font-face { font-family: '喵系'; src: url('font/喵系.ttf'); } */
+      /* @font-face { font-family: '陌尚卿'; src: url('font/陌尚卿.ttf'); } */
+      /* @font-face { font-family: '束安琪'; src: url('font/束安琪.ttf'); } */
       @font-face { font-family: '彤彤砸'; src: url('font/彤彤砸.ttf'); }
-      @font-face { font-family: '王者荣耀体验款'; src: url('font/王者荣耀体验款.ttf'); }
+      /* @font-face { font-family: '王者荣耀体验款'; src: url('font/王者荣耀体验款.ttf'); } */
       @font-face { font-family: '我己不知我为何这么帅'; src: url('font/我己不知我为何这么帅.ttf'); }
       @font-face { font-family: '潇笔'; src: url('font/潇笔.ttf'); }
       @font-face { font-family: '小雯雯小可爱大可爱哈'; src: url('font/小雯雯小可爱大可爱哈.ttf'); }
-      @font-face { font-family: '一看就是大夫写的'; src: url('font/一看就是大夫写的.ttf'); }
+      /* @font-face { font-family: '一看就是大夫写的'; src: url('font/一看就是大夫写的.ttf'); } */
       *,
       *::before,
       *::after {
@@ -163,6 +163,37 @@
       .excel-status {
         font-size: 12px;
         color: #64748b;
+      }
+      .rare-index {
+        display: none;
+        margin-top: 10px;
+        padding: 10px 12px;
+        border: 1px solid #fed7aa;
+        border-radius: 8px;
+        background: #fffaf5;
+        color: #9a3412;
+        font-size: 12px;
+        line-height: 1.7;
+      }
+      .rare-index.visible {
+        display: block;
+      }
+      .rare-index-title {
+        margin-right: 6px;
+        font-weight: 700;
+      }
+      .rare-index-link {
+        margin: 0 4px 0 0;
+        padding: 2px 6px;
+        border: 1px solid #fdba74;
+        border-radius: 4px;
+        background: #fff;
+        color: #c2410c;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .rare-index-link:hover {
+        background: #ffedd5;
       }
 
       /* ── Toolbar ── */
@@ -338,6 +369,20 @@
         text-overflow: ellipsis;
         max-width: 120px;
       }
+      .sig-card.rare-card {
+        background: #fff1e8;
+        /* border-left: 5px solid #f97316; */
+        box-shadow:
+          0 2px 8px rgba(194, 65, 12, 0.2),
+          0 0 0 1px #fb923c;
+      }
+      .sig-card.rare-card .sig-card-header {
+        background: #ffedd5;
+        border-bottom-color: #fdba74;
+      }
+      .sig-card.rare-card .canvas-area {
+        background: #fff7ed;
+      }
       .sig-idx {
         font-size: 10px;
         color: #94a3b8;
@@ -460,6 +505,7 @@
           <button class="btn-toolbar btn-excel" type="button" onclick="document.getElementById('excelInput').click()">导入 Excel 姓名</button>
           <span class="excel-status" id="excelStatus">导入后可将签名图片写回原 Excel</span>
         </div>
+        <div class="rare-index" id="rareIndex"></div>
       </div>
 
       <!-- Toolbar -->
@@ -546,27 +592,27 @@
         { id:'s2',  label:'把侧妃呵呵',  font:"'把侧妃呵呵'",       sizeBase:66, sizeVar:10, tiltMax:.13, jY:6, jX:3, rotMax:.10, scaleVar:.08, spacing:1.00, colors:['#2a1414','#3a1818','#1a0e0e'] },
         { id:'s3',  label:'变更大夏',    font:"'变更大夏'",         sizeBase:64, sizeVar:8,  tiltMax:.08, jY:3, jX:2, rotMax:.06, scaleVar:.05, spacing:.96, colors:['#1a2030','#252035','#1a1a2e'] },
         { id:'s4',  label:'草书',        font:"'草草草草草草书'",    sizeBase:72, sizeVar:14, tiltMax:.16, jY:8, jX:5, rotMax:.14, scaleVar:.13, spacing:1.05, colors:['#1a1a1a','#2a1a0a','#101010'] },
-        { id:'s5',  label:'陈氏家族体',  font:"'陈氏家族体'",       sizeBase:64, sizeVar:8,  tiltMax:.09, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.97, colors:['#0d1b3e','#1a2a5e','#0a1530'] },
+        // { id:'s5',  label:'陈氏家族体',  font:"'陈氏家族体'",       sizeBase:64, sizeVar:8,  tiltMax:.09, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.97, colors:['#0d1b3e','#1a2a5e','#0a1530'] },
         { id:'s6',  label:'凡人行书',    font:"'凡人行书'",         sizeBase:66, sizeVar:10, tiltMax:.11, jY:5, jX:3, rotMax:.09, scaleVar:.07, spacing:.98, colors:['#1e3a5f','#163050','#0d2640'] },
-        { id:'s7',  label:'巩草',        font:"'巩草'",             sizeBase:70, sizeVar:12, tiltMax:.14, jY:7, jX:4, rotMax:.12, scaleVar:.10, spacing:1.02, colors:['#1a1a1a','#0a0a0a','#2a2a1a'] },
+        // { id:'s7',  label:'巩草',        font:"'巩草'",             sizeBase:70, sizeVar:12, tiltMax:.14, jY:7, jX:4, rotMax:.12, scaleVar:.10, spacing:1.02, colors:['#1a1a1a','#0a0a0a','#2a2a1a'] },
         { id:'s8',  label:'好久嘻嘻',    font:"'好久嘻嘻'",         sizeBase:66, sizeVar:10, tiltMax:.10, jY:5, jX:3, rotMax:.08, scaleVar:.07, spacing:.97, colors:['#1a3a2e','#0d2820','#1a3020'] },
-        { id:'s9',  label:'呵呵鸡体',    font:"'呵呵呵呵呵鸡体'",   sizeBase:64, sizeVar:8,  tiltMax:.08, jY:4, jX:2, rotMax:.06, scaleVar:.06, spacing:.95, colors:['#2a1a4e','#1e1540','#1a1038'] },
-        { id:'s10', label:'恨到爱',      font:"'恨到爱'",           sizeBase:68, sizeVar:10, tiltMax:.12, jY:6, jX:3, rotMax:.10, scaleVar:.08, spacing:.99, colors:['#3a0a0a','#2a0808','#1a0a0a'] },
-        { id:'s11', label:'花开有时',    font:"'花开有时'",         sizeBase:66, sizeVar:8,  tiltMax:.09, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.96, colors:['#1a2a4e','#0d1a3e','#1a1a3e'] },
-        { id:'s12', label:'惊涛骇浪',    font:"'惊涛骇浪'",         sizeBase:72, sizeVar:14, tiltMax:.16, jY:8, jX:5, rotMax:.14, scaleVar:.12, spacing:1.04, colors:['#0a0a2e','#1a1a4e','#0d0d3e'] },
-        { id:'s13', label:'林泽西酒体',  font:"'林泽西酒体'",       sizeBase:68, sizeVar:12, tiltMax:.13, jY:6, jX:4, rotMax:.11, scaleVar:.09, spacing:1.01, colors:['#1a1a1a','#2a2010','#101010'] },
-        { id:'s14', label:'落雨无情',    font:"'落雨无情落花心'",   sizeBase:66, sizeVar:10, tiltMax:.10, jY:5, jX:3, rotMax:.08, scaleVar:.07, spacing:.97, colors:['#1e2a5e','#162050','#0d1a40'] },
+        // { id:'s9',  label:'呵呵鸡体',    font:"'呵呵呵呵呵鸡体'",   sizeBase:64, sizeVar:8,  tiltMax:.08, jY:4, jX:2, rotMax:.06, scaleVar:.06, spacing:.95, colors:['#2a1a4e','#1e1540','#1a1038'] },
+        // { id:'s10', label:'恨到爱',      font:"'恨到爱'",           sizeBase:68, sizeVar:10, tiltMax:.12, jY:6, jX:3, rotMax:.10, scaleVar:.08, spacing:.99, colors:['#3a0a0a','#2a0808','#1a0a0a'] },
+        // { id:'s11', label:'花开有时',    font:"'花开有时'",         sizeBase:66, sizeVar:8,  tiltMax:.09, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.96, colors:['#1a2a4e','#0d1a3e','#1a1a3e'] },
+        // { id:'s12', label:'惊涛骇浪',    font:"'惊涛骇浪'",         sizeBase:72, sizeVar:14, tiltMax:.16, jY:8, jX:5, rotMax:.14, scaleVar:.12, spacing:1.04, colors:['#0a0a2e','#1a1a4e','#0d0d3e'] },
+        // { id:'s13', label:'林泽西酒体',  font:"'林泽西酒体'",       sizeBase:68, sizeVar:12, tiltMax:.13, jY:6, jX:4, rotMax:.11, scaleVar:.09, spacing:1.01, colors:['#1a1a1a','#2a2010','#101010'] },
+        // { id:'s14', label:'落雨无情',    font:"'落雨无情落花心'",   sizeBase:66, sizeVar:10, tiltMax:.10, jY:5, jX:3, rotMax:.08, scaleVar:.07, spacing:.97, colors:['#1e2a5e','#162050','#0d1a40'] },
         { id:'s15', label:'湄岸',        font:"'湄岸'",             sizeBase:64, sizeVar:8,  tiltMax:.08, jY:3, jX:2, rotMax:.06, scaleVar:.05, spacing:.94, colors:['#1a3a2e','#0d2820','#0a2a20'] },
         { id:'s16', label:'眠心',        font:"'眠心'",             sizeBase:66, sizeVar:8,  tiltMax:.09, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.96, colors:['#2a1a4e','#1e1540','#1a1038'] },
-        { id:'s17', label:'喵系',        font:"'喵系'",             sizeBase:64, sizeVar:8,  tiltMax:.07, jY:3, jX:2, rotMax:.05, scaleVar:.05, spacing:.95, colors:['#3a1a2e','#2a0e20','#1a0a18'] },
-        { id:'s18', label:'陌尚卿',      font:"'陌尚卿'",           sizeBase:68, sizeVar:10, tiltMax:.10, jY:5, jX:3, rotMax:.08, scaleVar:.07, spacing:.97, colors:['#1a1a5e','#0d1b50','#1a1a4a'] },
-        { id:'s19', label:'束安琪',      font:"'束安琪'",           sizeBase:66, sizeVar:10, tiltMax:.09, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.96, colors:['#2a1414','#3a1818','#1a0e0e'] },
+        // { id:'s17', label:'喵系',        font:"'喵系'",             sizeBase:64, sizeVar:8,  tiltMax:.07, jY:3, jX:2, rotMax:.05, scaleVar:.05, spacing:.95, colors:['#3a1a2e','#2a0e20','#1a0a18'] },
+        // { id:'s18', label:'陌尚卿',      font:"'陌尚卿'",           sizeBase:68, sizeVar:10, tiltMax:.10, jY:5, jX:3, rotMax:.08, scaleVar:.07, spacing:.97, colors:['#1a1a5e','#0d1b50','#1a1a4a'] },
+        // { id:'s19', label:'束安琪',      font:"'束安琪'",           sizeBase:66, sizeVar:10, tiltMax:.09, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.96, colors:['#2a1414','#3a1818','#1a0e0e'] },
         { id:'s20', label:'彤彤砸',      font:"'彤彤砸'",           sizeBase:64, sizeVar:8,  tiltMax:.08, jY:4, jX:2, rotMax:.06, scaleVar:.05, spacing:.95, colors:['#1a3a3e','#0d2830','#0a2028'] },
-        { id:'s21', label:'王者荣耀',    font:"'王者荣耀体验款'",   sizeBase:68, sizeVar:10, tiltMax:.11, jY:5, jX:3, rotMax:.09, scaleVar:.07, spacing:.98, colors:['#0a1a3e','#0d1b50','#0a1530'] },
+        // { id:'s21', label:'王者荣耀',    font:"'王者荣耀体验款'",   sizeBase:68, sizeVar:10, tiltMax:.11, jY:5, jX:3, rotMax:.09, scaleVar:.07, spacing:.98, colors:['#0a1a3e','#0d1b50','#0a1530'] },
         { id:'s22', label:'帅气',        font:"'我己不知我为何这么帅'", sizeBase:64, sizeVar:8, tiltMax:.09, jY:4, jX:2, rotMax:.07, scaleVar:.06, spacing:.96, colors:['#1a1a1a','#2a1a0a','#101010'] },
         { id:'s23', label:'潇笔',        font:"'潇笔'",             sizeBase:70, sizeVar:12, tiltMax:.13, jY:6, jX:4, rotMax:.11, scaleVar:.09, spacing:1.00, colors:['#0d1b3e','#1a2a5e','#0a1530'] },
         { id:'s24', label:'小雯雯',      font:"'小雯雯小可爱大可爱哈'", sizeBase:64, sizeVar:8, tiltMax:.08, jY:4, jX:2, rotMax:.06, scaleVar:.05, spacing:.95, colors:['#3a1a3e','#2a0e30','#1a0a28'] },
-        { id:'s25', label:'大夫体',      font:"'一看就是大夫写的'",  sizeBase:66, sizeVar:12, tiltMax:.15, jY:7, jX:5, rotMax:.13, scaleVar:.11, spacing:1.03, colors:['#1a1a1a','#0a0a0a','#2a1a0a'] },
+        // { id:'s25', label:'大夫体',      font:"'一看就是大夫写的'",  sizeBase:66, sizeVar:12, tiltMax:.15, jY:7, jX:5, rotMax:.13, scaleVar:.11, spacing:1.03, colors:['#1a1a1a','#0a0a0a','#2a1a0a'] },
       ]
 
       // ─── Init global style pills ─────────────────────────────────────────────────
@@ -639,6 +685,7 @@
         document.getElementById('countBadge').textContent = `${n} 个签名`
         const exportButton = document.getElementById('btnExportExcel')
         if (exportButton) exportButton.disabled = !excelState || !n
+        renderRareIndex()
       }
 
       async function importExcel(event) {
@@ -737,9 +784,11 @@
       // ─── Card builder ─────────────────────────────────────────────────────────────
       function buildCard(i) {
         const { name } = sigData[i]
+        const rareChars = findRareCharacters(name)
         const el = document.createElement('div')
-        el.className = 'sig-card'
+        el.className = 'sig-card' + (rareChars.length ? ' rare-card' : '')
         el.dataset.idx = i
+        el.id = `signature-card-${i}`
         el.innerHTML = `
         <div class="sig-card-header">
             <div>
@@ -760,8 +809,50 @@
         return el
       }
 
+      function findRareCharacters(name) {
+        const rareChars = []
+        for (const char of name) {
+          const codePoint = char.codePointAt(0)
+          const isCjkExtension = (codePoint >= 0x3400 && codePoint <= 0x4dbf)
+            || (codePoint >= 0x20000 && codePoint <= 0x323af)
+          const isCjkCompatibility = codePoint >= 0xf900 && codePoint <= 0xfaff
+          const isKnownRareCharacter = '甦'.includes(char)
+          if ((isCjkExtension || isCjkCompatibility || isKnownRareCharacter) && !rareChars.includes(char)) rareChars.push(char)
+        }
+        return rareChars
+      }
+
+      function renderRareIndex() {
+        const index = document.getElementById('rareIndex')
+        if (!index) return
+        const entries = sigData
+          .map((item, i) => ({ index: i, name: item.name, rareChars: findRareCharacters(item.name) }))
+          .filter((item) => item.rareChars.length)
+        if (!entries.length) {
+          index.classList.remove('visible')
+          index.innerHTML = ''
+          return
+        }
+        index.classList.add('visible')
+        index.innerHTML = `<span class="rare-index-title">生僻字定位：</span>${entries.map((item) => {
+          const chars = esc(item.rareChars.join('、'))
+          return `<button class="rare-index-link" type="button" onclick="scrollToSignature(${item.index})">${item.index + 1}. ${esc(item.name)}（${chars}）</button>`
+        }).join('')}`
+      }
+
+      function scrollToSignature(index) {
+        const card = document.getElementById(`signature-card-${index}`)
+        if (!card) return
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        card.animate([
+          { boxShadow: '0 0 0 3px rgba(234, 88, 12, 0.35)' },
+          { boxShadow: '0 1px 4px rgba(0, 0, 0, 0.07)' },
+        ], { duration: 900, easing: 'ease-out' })
+      }
+
       // ─── Per-item actions ─────────────────────────────────────────────────────────
       function regenItem(i) {
+        sigData[i].si = Math.floor(Math.random() * STYLES.length)
         sigData[i].dataUrl = null
         renderBatch(i, i)
       }
